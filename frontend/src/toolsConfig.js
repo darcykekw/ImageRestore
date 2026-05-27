@@ -1,0 +1,357 @@
+// Central configuration for all tools / exercises
+
+export const CATEGORIES = [
+  {
+    id: 'contrast',
+    label: 'Contrast',
+    icon: '◑',
+    exercise: 'Exercise 4',
+    color: 'text-amber-400',
+    borderColor: 'border-amber-500/40',
+  },
+  {
+    id: 'smoothing',
+    label: 'Smoothing',
+    icon: '≋',
+    exercise: 'Exercise 8',
+    color: 'text-sky-400',
+    borderColor: 'border-sky-500/40',
+  },
+  {
+    id: 'sharpening',
+    label: 'Sharpening',
+    icon: '◈',
+    exercise: 'Exercise 9',
+    color: 'text-violet-400',
+    borderColor: 'border-violet-500/40',
+  },
+  {
+    id: 'edges',
+    label: 'Edge Detection',
+    icon: '⬡',
+    exercise: 'Exer 9 & 13',
+    color: 'text-cyan-400',
+    borderColor: 'border-cyan-500/40',
+  },
+  {
+    id: 'artistic',
+    label: 'Artistic FX',
+    icon: '✦',
+    exercise: 'Creative',
+    color: 'text-pink-400',
+    borderColor: 'border-pink-500/40',
+  },
+  {
+    id: 'restoration',
+    label: 'Restoration',
+    icon: '⟳',
+    exercise: 'Exercise 11',
+    color: 'text-emerald-400',
+    borderColor: 'border-emerald-500/40',
+  },
+  {
+    id: 'advanced',
+    label: 'Advanced',
+    icon: '⬟',
+    exercise: 'Exer 5, 6, 12',
+    color: 'text-rose-400',
+    borderColor: 'border-rose-500/40',
+  },
+]
+
+export const TOOLS = [
+  // ─── Contrast (Exercise 4) ────────────────────────────────────────────────
+  {
+    id: 'histogram_equalization',
+    category: 'contrast',
+    label: 'Histogram Equalization',
+    desc: 'Redistributes pixel intensities for uniform histogram',
+    endpoint: '/api/contrast',
+    method: 'histogram_equalization',
+    params: [],
+  },
+  {
+    id: 'contrast_stretching',
+    category: 'contrast',
+    label: 'Contrast Stretching',
+    desc: 'Stretches low-contrast image to full dynamic range',
+    endpoint: '/api/contrast',
+    method: 'contrast_stretching',
+    params: [
+      { id: 'low_percentile',  label: 'Low Percentile (%)',  type: 'slider', min: 0,  max: 49, step: 1, default: 2  },
+      { id: 'high_percentile', label: 'High Percentile (%)', type: 'slider', min: 51, max: 100, step: 1, default: 98 },
+    ],
+  },
+
+  // ─── Smoothing (Exercise 8) ───────────────────────────────────────────────
+  {
+    id: 'mean',
+    category: 'smoothing',
+    label: 'Mean Filter',
+    desc: 'Averages pixel values in a kernel window',
+    endpoint: '/api/filter',
+    method: 'mean',
+    params: [
+      { id: 'kernel_size', label: 'Kernel Size', type: 'slider', min: 3, max: 21, step: 2, default: 5 },
+    ],
+  },
+  {
+    id: 'median',
+    category: 'smoothing',
+    label: 'Median Filter',
+    desc: 'Replaces each pixel with the median of its neighbors — great for salt & pepper noise',
+    endpoint: '/api/filter',
+    method: 'median',
+    params: [
+      { id: 'kernel_size', label: 'Kernel Size', type: 'slider', min: 3, max: 21, step: 2, default: 5 },
+    ],
+  },
+  {
+    id: 'gaussian',
+    category: 'smoothing',
+    label: 'Gaussian Filter',
+    desc: 'Weighted average using a Gaussian kernel for natural blur',
+    endpoint: '/api/filter',
+    method: 'gaussian',
+    params: [
+      { id: 'kernel_size', label: 'Kernel Size', type: 'slider', min: 3, max: 21, step: 2, default: 5 },
+      { id: 'sigma',       label: 'Sigma',       type: 'slider', min: 0.1, max: 5, step: 0.1, default: 1.0 },
+    ],
+  },
+
+  // ─── Sharpening (Exercise 9) ──────────────────────────────────────────────
+  {
+    id: 'laplacian',
+    category: 'sharpening',
+    label: 'Laplacian Sharpen',
+    desc: 'Second-order derivative sharpening using Laplacian operator',
+    endpoint: '/api/filter',
+    method: 'laplacian',
+    params: [
+      { id: 'strength', label: 'Strength', type: 'slider', min: 0.1, max: 3.0, step: 0.1, default: 1.0 },
+    ],
+  },
+  {
+    id: 'unsharp',
+    category: 'sharpening',
+    label: 'Unsharp Masking',
+    desc: 'Subtracts a blurred copy to enhance edges and detail',
+    endpoint: '/api/filter',
+    method: 'unsharp',
+    params: [
+      { id: 'kernel_size', label: 'Kernel Size', type: 'slider', min: 3, max: 21, step: 2, default: 5 },
+      { id: 'sigma',       label: 'Sigma',       type: 'slider', min: 0.1, max: 5, step: 0.1, default: 1.0 },
+      { id: 'strength',    label: 'Strength',    type: 'slider', min: 0.1, max: 4.0, step: 0.1, default: 1.5 },
+    ],
+  },
+
+  // ─── Edge Detection (Exercises 9 & 13) ───────────────────────────────────
+  {
+    id: 'sobel',
+    category: 'edges',
+    label: 'Sobel Gradient',
+    desc: 'First-order gradient filter approximating horizontal and vertical edges',
+    endpoint: '/api/filter',
+    method: 'sobel',
+    params: [
+      { id: 'ksize', label: 'Kernel Size', type: 'slider', min: 1, max: 7, step: 2, default: 3 },
+    ],
+  },
+  {
+    id: 'prewitt',
+    category: 'edges',
+    label: 'Prewitt Gradient',
+    desc: 'Simple gradient filter for edge detection in X and Y directions',
+    endpoint: '/api/filter',
+    method: 'prewitt',
+    params: [],
+  },
+  {
+    id: 'canny',
+    category: 'edges',
+    label: 'Canny Edge Detection',
+    desc: 'Multi-stage edge detector with non-maximum suppression and hysteresis (Exercise 13)',
+    endpoint: '/api/filter',
+    method: 'canny',
+    params: [
+      { id: 'threshold1', label: 'Low Threshold',  type: 'slider', min: 10,  max: 200, step: 5, default: 100 },
+      { id: 'threshold2', label: 'High Threshold', type: 'slider', min: 50,  max: 400, step: 5, default: 200 },
+    ],
+  },
+
+  // ─── Artistic FX ──────────────────────────────────────────────────────────
+  {
+    id: 'pencil_sketch',
+    category: 'artistic',
+    label: 'Pencil Sketch',
+    desc: 'Converts image to a hand-drawn pencil sketch look',
+    endpoint: '/api/filter',
+    method: 'pencil_sketch',
+    params: [],
+  },
+  {
+    id: 'painting',
+    category: 'artistic',
+    label: 'Painting Effect',
+    desc: 'Oil-painting style using bilateral filtering and edge overlay',
+    endpoint: '/api/filter',
+    method: 'painting',
+    params: [],
+  },
+  {
+    id: 'vintage',
+    category: 'artistic',
+    label: 'Vintage / Sepia',
+    desc: 'Warm sepia tone with a vignette for a vintage photograph look',
+    endpoint: '/api/filter',
+    method: 'vintage',
+    params: [],
+  },
+  {
+    id: 'negative',
+    category: 'artistic',
+    label: 'Image Negative',
+    desc: 'Inverts pixel intensities — Exercise 1 (Binary & Grayscale negative)',
+    endpoint: '/api/filter',
+    method: 'negative',
+    params: [],
+  },
+
+  // ─── Restoration (Exercise 11) ────────────────────────────────────────────
+  {
+    id: 'add_gaussian_noise',
+    category: 'restoration',
+    label: 'Add Gaussian Noise',
+    desc: 'Simulates sensor noise with a Gaussian distribution',
+    endpoint: '/api/restore',
+    method: 'add_gaussian_noise',
+    params: [
+      { id: 'mean', label: 'Mean',      type: 'slider', min: -50, max: 50, step: 1, default: 0 },
+      { id: 'std',  label: 'Std Dev',   type: 'slider', min: 1,   max: 80, step: 1, default: 25 },
+    ],
+  },
+  {
+    id: 'remove_gaussian_noise',
+    category: 'restoration',
+    label: 'Remove Gaussian Noise',
+    desc: 'Reduces Gaussian noise using a Gaussian blur kernel',
+    endpoint: '/api/restore',
+    method: 'remove_gaussian_noise',
+    params: [
+      { id: 'kernel_size', label: 'Kernel Size', type: 'slider', min: 3, max: 21, step: 2, default: 5 },
+    ],
+  },
+  {
+    id: 'add_salt_pepper',
+    category: 'restoration',
+    label: 'Add Salt & Pepper',
+    desc: 'Randomly sets pixels to black or white to simulate impulsive noise',
+    endpoint: '/api/restore',
+    method: 'add_salt_pepper',
+    params: [
+      { id: 'density', label: 'Noise Density', type: 'slider', min: 0.01, max: 0.3, step: 0.01, default: 0.05 },
+    ],
+  },
+  {
+    id: 'remove_salt_pepper',
+    category: 'restoration',
+    label: 'Remove Salt & Pepper',
+    desc: 'Median filter is optimal for removing impulsive noise',
+    endpoint: '/api/restore',
+    method: 'remove_salt_pepper',
+    params: [
+      { id: 'kernel_size', label: 'Kernel Size', type: 'slider', min: 3, max: 15, step: 2, default: 5 },
+    ],
+  },
+  {
+    id: 'deblur',
+    category: 'restoration',
+    label: 'Deblur (Wiener)',
+    desc: 'Frequency-domain Wiener deconvolution to reverse motion blur',
+    endpoint: '/api/restore',
+    method: 'deblur',
+    params: [
+      { id: 'kernel_size', label: 'Blur Kernel Size', type: 'slider', min: 3,    max: 25,   step: 2,    default: 5    },
+      { id: 'noise_var',   label: 'Noise Variance',   type: 'slider', min: 0.001, max: 0.1, step: 0.001, default: 0.01 },
+    ],
+  },
+  {
+    id: 'binarize',
+    category: 'restoration',
+    label: 'Binarization',
+    desc: 'Converts grayscale image to binary (black & white)',
+    endpoint: '/api/restore',
+    method: 'binarize',
+    params: [
+      {
+        id: 'method',
+        label: 'Method',
+        type: 'select',
+        options: [
+          { value: 'otsu',     label: 'Otsu (Auto)' },
+          { value: 'adaptive', label: 'Adaptive' },
+          { value: 'simple',   label: 'Fixed Threshold' },
+        ],
+        default: 'otsu',
+      },
+      { id: 'threshold', label: 'Threshold (Fixed only)', type: 'slider', min: 0, max: 255, step: 1, default: 127 },
+    ],
+  },
+  {
+    id: 'thinning',
+    category: 'restoration',
+    label: 'Image Thinning',
+    desc: 'Morphological skeletonization — reduces structures to single-pixel-wide lines',
+    endpoint: '/api/restore',
+    method: 'thinning',
+    params: [],
+  },
+
+  // ─── Advanced (Exercises 5, 6, 12) ───────────────────────────────────────
+  {
+    id: 'fft_2d',
+    category: 'advanced',
+    label: 'FFT 2D Spectrum',
+    desc: 'Visualizes the 2D frequency spectrum of the image (Exercise 6)',
+    endpoint: '/api/fft',
+    method: 'fft_2d',
+    fftType: '2d',
+    params: [],
+  },
+  {
+    id: 'fft_1d',
+    category: 'advanced',
+    label: 'FFT 1D (Row Slice)',
+    desc: 'Frequency spectrum of the middle row of the image (Exercise 6)',
+    endpoint: '/api/fft',
+    method: 'fft_1d',
+    fftType: '1d',
+    params: [],
+  },
+  {
+    id: 'intensity_slice',
+    category: 'advanced',
+    label: 'Intensity Slicing',
+    desc: 'Highlights pixels within a specific intensity range with a chosen color (Exercise 12)',
+    endpoint: '/api/intensity-slice',
+    method: 'intensity_slice',
+    params: [
+      { id: 'low',     label: 'Low Intensity',  type: 'slider', min: 0,   max: 254, step: 1, default: 80  },
+      { id: 'high',    label: 'High Intensity', type: 'slider', min: 1,   max: 255, step: 1, default: 180 },
+      { id: 'color_r', label: 'Highlight R',    type: 'slider', min: 0,   max: 255, step: 1, default: 0   },
+      { id: 'color_g', label: 'Highlight G',    type: 'slider', min: 0,   max: 255, step: 1, default: 255 },
+      { id: 'color_b', label: 'Highlight B',    type: 'slider', min: 0,   max: 255, step: 1, default: 0   },
+    ],
+  },
+  {
+    id: 'bitplane',
+    category: 'advanced',
+    label: 'Bit Plane Slicing',
+    desc: 'Extracts a specific bit layer from the grayscale image (Exercise 5)',
+    endpoint: '/api/bitplane',
+    method: 'bitplane',
+    params: [
+      { id: 'bit', label: 'Bit Plane (0 = LSB, 7 = MSB)', type: 'slider', min: 0, max: 7, step: 1, default: 7 },
+    ],
+  },
+]
