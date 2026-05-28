@@ -52,7 +52,6 @@ export default function ImageCanvas({ originalImage, processedImage, isLoading, 
   return (
     <div className="flex flex-col flex-1 min-h-0 overflow-hidden bg-white">
 
-      {/* ── Empty drop zone ─────────────────────────────────────────────── */}
       {!originalImage && (
         <div className="flex-1 flex items-center justify-center" style={{ background: '#f9fafb' }}>
           <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
@@ -80,7 +79,6 @@ export default function ImageCanvas({ originalImage, processedImage, isLoading, 
         </div>
       )}
 
-      {/* ── Single original (no result yet) ─────────────────────────────── */}
       {showSingleOrig && (
         <div
           className="flex-1 flex items-center justify-center relative"
@@ -107,10 +105,8 @@ export default function ImageCanvas({ originalImage, processedImage, isLoading, 
         </div>
       )}
 
-      {/* ── Comparison view ──────────────────────────────────────────────── */}
       {showCompare && (
         <div className="flex-1 flex flex-col min-h-0">
-          {/* Labels row */}
           <div
             className="flex items-center shrink-0"
             style={{ padding: '8px 16px', borderBottom: '1px solid #f3f4f6' }}
@@ -120,7 +116,6 @@ export default function ImageCanvas({ originalImage, processedImage, isLoading, 
                   style={{ color: '#3b82f6' }}>After</span>
           </div>
 
-          {/* Canvas */}
           <div
             ref={containerRef}
             className="flex-1 relative overflow-hidden select-none"
@@ -137,7 +132,7 @@ export default function ImageCanvas({ originalImage, processedImage, isLoading, 
               draggable={false}
             />
 
-            {/* After — clip from divPos onward */}
+            {/* after image clipped to the right of the divider */}
             {processedImage && !isLoading && (
               <div
                 className="absolute inset-0"
@@ -152,7 +147,7 @@ export default function ImageCanvas({ originalImage, processedImage, isLoading, 
               </div>
             )}
 
-            {/* Skeleton while loading */}
+            {/* shimmer placeholder while waiting for the result */}
             {isLoading && (
               <div
                 className="absolute inset-0"
@@ -165,7 +160,7 @@ export default function ImageCanvas({ originalImage, processedImage, isLoading, 
               />
             )}
 
-            {/* Divider */}
+            {/* drag handle */}
             <div
               className="absolute top-0 bottom-0 flex items-center justify-center z-10"
               style={{
@@ -177,12 +172,10 @@ export default function ImageCanvas({ originalImage, processedImage, isLoading, 
               onMouseDown={() => { dragging.current = true }}
               onTouchStart={() => { dragging.current = true }}
             >
-              {/* 1px line */}
               <div
                 className="absolute top-0 bottom-0"
                 style={{ width: 1, background: '#e5e7eb', left: '50%', transform: 'translateX(-50%)' }}
               />
-              {/* Circle handle */}
               <div
                 style={{
                   width: 20,
@@ -199,7 +192,6 @@ export default function ImageCanvas({ originalImage, processedImage, isLoading, 
             </div>
           </div>
 
-          {/* Download row */}
           {processedImage && (
             <div
               className="shrink-0 flex items-center justify-end"
@@ -207,7 +199,7 @@ export default function ImageCanvas({ originalImage, processedImage, isLoading, 
             >
               <a
                 href={processedImage}
-                download="artrestore.png"
+                download="imagerestore.png"
                 className="text-[12px] text-gray-400"
                 style={{ textDecoration: 'none' }}
                 onMouseEnter={e => e.currentTarget.style.color = '#374151'}

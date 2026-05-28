@@ -20,7 +20,6 @@ export default function Sidebar({
       className="flex flex-col shrink-0 bg-white"
       style={{ width: 240, borderRight: '1px solid #e5e7eb' }}
     >
-      {/* ── Scrollable tool list ─────────────────────────────────────────── */}
       <div className="flex-1 overflow-y-auto" style={{ paddingTop: 4, paddingBottom: 8 }}>
         {CATEGORIES.map((cat, catIdx) => {
           const catTools  = TOOLS.filter(t => t.category === cat.id)
@@ -29,7 +28,7 @@ export default function Sidebar({
 
           return (
             <div key={cat.id}>
-              {/* ── Category header — click to toggle ── */}
+              {/* category header, click to expand/collapse */}
               <button
                 onClick={() => toggle(cat.id)}
                 className="w-full flex items-center justify-between"
@@ -66,7 +65,6 @@ export default function Sidebar({
                 />
               </button>
 
-              {/* ── Tool list — visible when open ── */}
               {isOpen && (
                 <div>
                   {catTools.map(tool => {
@@ -98,7 +96,6 @@ export default function Sidebar({
                           {tool.label}
                         </button>
 
-                        {/* Inline params for selected tool */}
                         {isActive && tool.params.length > 0 && (
                           <div
                             className="space-y-4"
@@ -139,7 +136,6 @@ export default function Sidebar({
                 </div>
               )}
 
-              {/* Thin divider between categories */}
               {catIdx < CATEGORIES.length - 1 && (
                 <div style={{ height: 1, background: '#f3f4f6', margin: '4px 0' }} />
               )}
@@ -148,7 +144,7 @@ export default function Sidebar({
         })}
       </div>
 
-      {/* ── Fixed Apply section ───────────────────────────────────────────── */}
+      {/* apply button stays pinned at the bottom */}
       <div
         className="shrink-0 bg-white"
         style={{ padding: 16, borderTop: '1px solid #e5e7eb' }}
@@ -192,8 +188,6 @@ export default function Sidebar({
     </aside>
   )
 }
-
-/* ── Param controls ──────────────────────────────────────────────────────── */
 
 function ParamControl({ param, value, onChange }) {
   const isFloat = !Number.isInteger(param.step)

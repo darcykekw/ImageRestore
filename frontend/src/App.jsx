@@ -26,7 +26,7 @@ export default function App() {
     appliedTimer.current = setTimeout(() => setJustApplied(false), 3000)
   }
 
-  // ── Upload ────────────────────────────────────────────────────────────────
+  // read the file and reset everything when a new image is dropped
   const handleUpload = useCallback((file) => {
     const reader = new FileReader()
     reader.onload = (e) => {
@@ -39,7 +39,7 @@ export default function App() {
     reader.readAsDataURL(file)
   }, [])
 
-  // ── Select tool ───────────────────────────────────────────────────────────
+  // switching tools resets params to their defaults
   const handleSelectTool = useCallback((toolId) => {
     setActiveToolId(toolId)
     const tool = TOOLS.find(t => t.id === toolId)
@@ -52,7 +52,7 @@ export default function App() {
     setJustApplied(false)
   }, [])
 
-  // ── Apply ─────────────────────────────────────────────────────────────────
+  // send image + current params to the backend, update result on success
   const handleApply = useCallback(async () => {
     if (!originalImage || !activeTool) return
     setIsLoading(true)
@@ -88,7 +88,7 @@ export default function App() {
     }
   }, [originalImage, activeTool, params])
 
-  // ── Analyze ───────────────────────────────────────────────────────────────
+  // just get the stats without applying any filter
   const handleAnalyze = useCallback(async () => {
     if (!originalImage) return
     setIsLoading(true)

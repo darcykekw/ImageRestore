@@ -17,7 +17,7 @@ def encode_image(img):
     return 'data:image/png;base64,' + base64.b64encode(buffer).decode('utf-8')
 
 
-# ─── Exercise 4: Contrast Enhancement ────────────────────────────────────────
+# ex. 4 - contrast enhancement
 
 def histogram_equalization(img):
     ycrcb = cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb)
@@ -42,13 +42,13 @@ def contrast_stretching(img, low_percentile=2, high_percentile=98):
     return result.astype(np.uint8)
 
 
-# ─── Exercise 1: Negative ────────────────────────────────────────────────────
+# ex. 1 - image negative
 
 def image_negative(img):
     return 255 - img
 
 
-# ─── Exercise 8: Smoothing Filters ───────────────────────────────────────────
+# ex. 8 - smoothing filters
 
 def mean_filter(img, kernel_size=5):
     k = kernel_size if kernel_size % 2 == 1 else kernel_size + 1
@@ -65,7 +65,7 @@ def gaussian_filter(img, kernel_size=5, sigma=1.0):
     return cv2.GaussianBlur(img, (k, k), sigma)
 
 
-# ─── Exercise 9: Sharpening + Edge Detection ─────────────────────────────────
+# ex. 9 - sharpening and edge detection
 
 def laplacian_sharpen(img, strength=1.0):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -116,7 +116,7 @@ def canny_edge(img, threshold1=100, threshold2=200):
     return cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
 
 
-# ─── Artistic Effects ─────────────────────────────────────────────────────────
+# artistic effects (not really an exercise but added for fun)
 
 def pencil_sketch(img):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -155,7 +155,7 @@ def vintage_effect(img):
     return (result * 255).astype(np.uint8)
 
 
-# ─── Exercise 11: Restoration ─────────────────────────────────────────────────
+# ex. 11 - image restoration
 
 def add_gaussian_noise(img, mean=0, std=25):
     noise = np.random.normal(mean, std, img.shape).astype(np.float32)
@@ -229,7 +229,7 @@ def image_thinning(img):
     return cv2.cvtColor(skel, cv2.COLOR_GRAY2BGR)
 
 
-# ─── Exercise 6: FFT Visualization ───────────────────────────────────────────
+# ex. 6 - FFT visualization
 
 def fft_2d(img):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -249,7 +249,7 @@ def fft_1d(img):
     return spectrum.tolist()
 
 
-# ─── Exercise 12: Intensity Slicing ──────────────────────────────────────────
+# ex. 12 - intensity slicing
 
 def intensity_slice(img, low=100, high=200, highlight_color=None):
     if highlight_color is None:
@@ -261,7 +261,7 @@ def intensity_slice(img, low=100, high=200, highlight_color=None):
     return result
 
 
-# ─── Exercise 5: Bit Plane Slicing ───────────────────────────────────────────
+# ex. 5 - bit plane slicing
 
 def extract_bit_plane(img, bit=7):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)

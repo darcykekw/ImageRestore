@@ -10,6 +10,7 @@ CORS(app, origins='*')
 
 
 def _stats_and_hist(orig, proc):
+    # bundles stats + histogram for both before/after in one shot
     return {
         'stats_original':      a.compute_stats(orig),
         'stats_processed':     a.compute_stats(proc),
@@ -25,7 +26,7 @@ def health():
     return jsonify({'status': 'ok'})
 
 
-# ─── Exercise 4: Contrast Enhancement ────────────────────────────────────────
+# ex. 4 - contrast enhancement
 @app.route('/api/contrast', methods=['POST'])
 def contrast():
     try:
@@ -50,7 +51,7 @@ def contrast():
         return jsonify({'error': traceback.format_exc()}), 500
 
 
-# ─── Exercises 8 & 9: Filters ────────────────────────────────────────────────
+# ex. 8 & 9 - smoothing, sharpening, edge detection, artistic effects
 @app.route('/api/filter', methods=['POST'])
 def apply_filter():
     try:
@@ -80,7 +81,7 @@ def apply_filter():
         return jsonify({'error': traceback.format_exc()}), 500
 
 
-# ─── Exercise 11: Restoration ─────────────────────────────────────────────────
+# ex. 11 - image restoration (noise, deblur, binarize, thinning)
 @app.route('/api/restore', methods=['POST'])
 def restore():
     try:
@@ -105,7 +106,7 @@ def restore():
         return jsonify({'error': traceback.format_exc()}), 500
 
 
-# ─── Exercise 7: Image Analysis ──────────────────────────────────────────────
+# ex. 7 - compute stats + histogram without modifying the image
 @app.route('/api/analyze', methods=['POST'])
 def analyze():
     try:
@@ -120,7 +121,7 @@ def analyze():
         return jsonify({'error': traceback.format_exc()}), 500
 
 
-# ─── Exercise 6: FFT ──────────────────────────────────────────────────────────
+# ex. 6 - FFT, returns either 2D spectrum image or 1D row data for the chart
 @app.route('/api/fft', methods=['POST'])
 def fft():
     try:
@@ -137,7 +138,7 @@ def fft():
         return jsonify({'error': traceback.format_exc()}), 500
 
 
-# ─── Exercise 12: Intensity Slicing ──────────────────────────────────────────
+# ex. 12 - highlight pixels within a given intensity range
 @app.route('/api/intensity-slice', methods=['POST'])
 def intensity_slice():
     try:
@@ -152,7 +153,7 @@ def intensity_slice():
         return jsonify({'error': traceback.format_exc()}), 500
 
 
-# ─── Exercise 5: Bit Plane ────────────────────────────────────────────────────
+# ex. 5 - extract a single bit plane (0 = LSB, 7 = MSB)
 @app.route('/api/bitplane', methods=['POST'])
 def bitplane():
     try:

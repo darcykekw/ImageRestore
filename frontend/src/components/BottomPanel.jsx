@@ -74,7 +74,6 @@ export default function BottomPanel({ result, hasOriginal, onAnalyze, isLoading 
       {/* Tab body */}
       <div className="flex-1 overflow-hidden px-6 py-4">
 
-        {/* ── Analysis ──────────────────────────────────────────────────── */}
         {activeTab === 'analysis' && (
           <div className="flex items-start gap-8 h-full">
             {statsOrig ? (
@@ -83,7 +82,7 @@ export default function BottomPanel({ result, hasOriginal, onAnalyze, isLoading 
                 <StatRow label="Std Dev"     orig={statsOrig.std_dev}     proc={statsProc?.std_dev} />
                 <StatRow label="Correlation" orig={statsOrig.correlation} proc={statsProc?.correlation} decimals={4} />
 
-                {/* Channel breakdown */}
+                {/* per-channel breakdown for RGB images */}
                 {statsOrig.channels && (
                   <div className="flex gap-6 border-l border-gray-100 pl-8">
                     {Object.entries(statsOrig.channels).map(([ch, s]) => {
@@ -110,7 +109,6 @@ export default function BottomPanel({ result, hasOriginal, onAnalyze, isLoading 
           </div>
         )}
 
-        {/* ── Histogram ─────────────────────────────────────────────────── */}
         {activeTab === 'histogram' && (
           <div className="flex gap-6 h-full items-start">
             {histDataOrig ? (
@@ -126,7 +124,6 @@ export default function BottomPanel({ result, hasOriginal, onAnalyze, isLoading 
           </div>
         )}
 
-        {/* ── FFT ───────────────────────────────────────────────────────── */}
         {activeTab === 'fft' && (
           <div className="h-full">
             {fft1d
@@ -140,7 +137,6 @@ export default function BottomPanel({ result, hasOriginal, onAnalyze, isLoading 
   )
 }
 
-/* ── Stat row ────────────────────────────────────────────────────────────── */
 function StatRow({ label, orig, proc, decimals = 2 }) {
   const delta = proc !== undefined && orig !== undefined ? proc - orig : null
   return (
@@ -170,9 +166,8 @@ function StatRow({ label, orig, proc, decimals = 2 }) {
   )
 }
 
-/* ── Recharts histogram ──────────────────────────────────────────────────── */
 function HistChart({ data, label }) {
-  // Build 32-bin chart from the raw 256-bin data
+  // downsample from 256 bins to 32 so the bars don't look too cramped
   const chartData = buildBins(data, 32)
 
   return (
@@ -213,7 +208,6 @@ function buildBins(histData, bins = 32) {
   })
 }
 
-/* ── Empty state ─────────────────────────────────────────────────────────── */
 function EmptyState({ text }) {
   return (
     <div className="flex items-center justify-center w-full h-full">
