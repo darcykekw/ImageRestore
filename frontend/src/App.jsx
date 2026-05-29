@@ -80,8 +80,8 @@ export default function App() {
       if (data.error) {
         setError(data.error)
       } else {
-        // save current state to undo stack before overwriting
-        setHistory(prev => [...prev, { processedImage, result }])
+        // save current state + tool label to undo stack before overwriting
+        setHistory(prev => [...prev, { processedImage, result, label: activeTool.label }])
         setProcessedImage(data.processed || null)
         setResult(data)
         markApplied()
@@ -129,6 +129,7 @@ export default function App() {
         sidebarOpen={sidebarOpen}
         canUndo={history.length > 0}
         onUndo={handleUndo}
+        lastToolLabel={history.length > 0 ? history[history.length - 1].label : null}
       />
 
       <div className="flex flex-1 overflow-hidden min-h-0">

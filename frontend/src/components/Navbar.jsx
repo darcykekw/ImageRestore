@@ -1,6 +1,6 @@
 import { Undo2, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 
-export default function Navbar({ onToggleSidebar, sidebarOpen, canUndo, onUndo }) {
+export default function Navbar({ onToggleSidebar, sidebarOpen, canUndo, onUndo, lastToolLabel }) {
   return (
     <header
       className="flex items-center justify-between px-4 shrink-0 bg-white"
@@ -39,23 +39,26 @@ export default function Navbar({ onToggleSidebar, sidebarOpen, canUndo, onUndo }
           Digital Image Processing
         </span>
 
-        {/* undo button */}
+        {/* undo button — shows which filter will be reverted */}
         <button
           onClick={onUndo}
           disabled={!canUndo}
-          title="Undo last apply"
+          title={canUndo ? `Revert ${lastToolLabel}` : 'Nothing to undo'}
           className="flex items-center gap-1.5 h-8 px-3 text-[12px] font-medium rounded"
           style={{
             background: 'none',
             border: '1px solid #e5e7eb',
             color: canUndo ? '#374151' : '#d1d5db',
             cursor: canUndo ? 'pointer' : 'not-allowed',
+            maxWidth: 180,
           }}
           onMouseEnter={e => { if (canUndo) e.currentTarget.style.background = '#f9fafb' }}
           onMouseLeave={e => { if (canUndo) e.currentTarget.style.background = 'none' }}
         >
-          <Undo2 size={13} strokeWidth={2} />
-          Undo
+          <Undo2 size={13} strokeWidth={2} style={{ flexShrink: 0 }} />
+          <span className="truncate">
+            {canUndo ? `Undo ${lastToolLabel}` : 'Undo'}
+          </span>
         </button>
       </div>
     </header>
