@@ -73,6 +73,18 @@ def apply_filter():
             'painting':      lambda: f.painting_effect(img),
             'vintage':       lambda: f.vintage_effect(img),
             'negative':      lambda: f.image_negative(img),
+            # ex. 2
+            'erode':         lambda: f.erode(img, int(p.get('kernel_size', 3))),
+            'dilate':        lambda: f.dilate(img, int(p.get('kernel_size', 3))),
+            'morph_open':    lambda: f.morph_open(img, int(p.get('kernel_size', 3))),
+            'morph_close':   lambda: f.morph_close(img, int(p.get('kernel_size', 3))),
+            # ex. 3
+            'rotate':        lambda: f.rotate_image(img, float(p.get('angle', 45))),
+            'scale':         lambda: f.scale_image(img, float(p.get('factor', 0.5))),
+            'translate':     lambda: f.translate_image(img, int(p.get('tx', 50)), int(p.get('ty', 50))),
+            'flip':          lambda: f.flip_image(img, int(p.get('direction', 1))),
+            # ex. 10
+            'dct_compress':  lambda: f.dct_compress(img, int(p.get('quality', 50))),
         }
 
         result = dispatch[method]() if method in dispatch else img

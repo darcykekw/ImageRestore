@@ -5,9 +5,25 @@ export const CATEGORIES = [
     id: 'contrast',
     label: 'Contrast',
     icon: '◑',
-    exercise: 'Exercise 4',
+    exercise: 'Exer 1 & 4',
     color: 'text-amber-400',
     borderColor: 'border-amber-500/40',
+  },
+  {
+    id: 'pixel',
+    label: 'Pixel Relations',
+    icon: '⊞',
+    exercise: 'Exercise 2',
+    color: 'text-orange-400',
+    borderColor: 'border-orange-500/40',
+  },
+  {
+    id: 'transform',
+    label: 'Transformations',
+    icon: '↻',
+    exercise: 'Exercise 3',
+    color: 'text-teal-400',
+    borderColor: 'border-teal-500/40',
   },
   {
     id: 'smoothing',
@@ -45,7 +61,7 @@ export const CATEGORIES = [
     id: 'advanced',
     label: 'Advanced',
     icon: '⬟',
-    exercise: 'Exer 5, 6, 12',
+    exercise: 'Exer 5,6,10,12',
     color: 'text-rose-400',
     borderColor: 'border-rose-500/40',
   },
@@ -60,7 +76,7 @@ export const CATEGORIES = [
 ]
 
 export const TOOLS = [
-  // ─── Contrast (Exercise 4) ────────────────────────────────────────────────
+  // contrast + ex. 1
   {
     id: 'histogram_equalization',
     category: 'contrast',
@@ -81,6 +97,15 @@ export const TOOLS = [
       { id: 'low_percentile',  label: 'Low Percentile (%)',  type: 'slider', min: 0,  max: 49, step: 1, default: 2  },
       { id: 'high_percentile', label: 'High Percentile (%)', type: 'slider', min: 51, max: 100, step: 1, default: 98 },
     ],
+  },
+  {
+    id: 'negative',
+    category: 'contrast',
+    label: 'Image Negative',
+    desc: 'Inverts pixel intensities — Exercise 1',
+    endpoint: '/api/filter',
+    method: 'negative',
+    params: [],
   },
 
   // ─── Smoothing (Exercise 8) ───────────────────────────────────────────────
@@ -207,16 +232,6 @@ export const TOOLS = [
     method: 'vintage',
     params: [],
   },
-  {
-    id: 'negative',
-    category: 'artistic',
-    label: 'Image Negative',
-    desc: 'Inverts pixel intensities — Exercise 1 (Binary & Grayscale negative)',
-    endpoint: '/api/filter',
-    method: 'negative',
-    params: [],
-  },
-
   // ─── Restoration (Exercise 11) ────────────────────────────────────────────
   {
     id: 'add_gaussian_noise',
@@ -307,7 +322,110 @@ export const TOOLS = [
     params: [],
   },
 
-  // ─── Advanced (Exercises 5, 6, 12) ───────────────────────────────────────
+  // ex. 2 - pixel relationships (morphological)
+  {
+    id: 'erode',
+    category: 'pixel',
+    label: 'Erosion',
+    desc: 'Shrinks bright regions based on pixel neighborhood (8-connectivity)',
+    endpoint: '/api/filter',
+    method: 'erode',
+    params: [
+      { id: 'kernel_size', label: 'Kernel Size', type: 'slider', min: 3, max: 15, step: 2, default: 3 },
+    ],
+  },
+  {
+    id: 'dilate',
+    category: 'pixel',
+    label: 'Dilation',
+    desc: 'Expands bright regions based on pixel neighborhood (8-connectivity)',
+    endpoint: '/api/filter',
+    method: 'dilate',
+    params: [
+      { id: 'kernel_size', label: 'Kernel Size', type: 'slider', min: 3, max: 15, step: 2, default: 3 },
+    ],
+  },
+  {
+    id: 'morph_open',
+    category: 'pixel',
+    label: 'Morphological Opening',
+    desc: 'Erosion then dilation — removes small bright noise',
+    endpoint: '/api/filter',
+    method: 'morph_open',
+    params: [
+      { id: 'kernel_size', label: 'Kernel Size', type: 'slider', min: 3, max: 15, step: 2, default: 3 },
+    ],
+  },
+  {
+    id: 'morph_close',
+    category: 'pixel',
+    label: 'Morphological Closing',
+    desc: 'Dilation then erosion — fills small dark holes',
+    endpoint: '/api/filter',
+    method: 'morph_close',
+    params: [
+      { id: 'kernel_size', label: 'Kernel Size', type: 'slider', min: 3, max: 15, step: 2, default: 3 },
+    ],
+  },
+
+  // ex. 3 - image transformations
+  {
+    id: 'rotate',
+    category: 'transform',
+    label: 'Rotation',
+    desc: 'Rotates the image around its center',
+    endpoint: '/api/filter',
+    method: 'rotate',
+    params: [
+      { id: 'angle', label: 'Angle (°)', type: 'slider', min: -180, max: 180, step: 1, default: 45 },
+    ],
+  },
+  {
+    id: 'scale',
+    category: 'transform',
+    label: 'Scaling',
+    desc: 'Resizes the image by a scale factor',
+    endpoint: '/api/filter',
+    method: 'scale',
+    params: [
+      { id: 'factor', label: 'Scale Factor', type: 'slider', min: 0.1, max: 2.0, step: 0.05, default: 0.5 },
+    ],
+  },
+  {
+    id: 'translate',
+    category: 'transform',
+    label: 'Translation',
+    desc: 'Shifts the image along X and Y axes',
+    endpoint: '/api/filter',
+    method: 'translate',
+    params: [
+      { id: 'tx', label: 'Shift X (px)', type: 'slider', min: -200, max: 200, step: 5, default: 50 },
+      { id: 'ty', label: 'Shift Y (px)', type: 'slider', min: -200, max: 200, step: 5, default: 50 },
+    ],
+  },
+  {
+    id: 'flip',
+    category: 'transform',
+    label: 'Flip',
+    desc: 'Flips the image horizontally, vertically, or both',
+    endpoint: '/api/filter',
+    method: 'flip',
+    params: [
+      {
+        id: 'direction',
+        label: 'Direction',
+        type: 'select',
+        options: [
+          { value: '1',  label: 'Horizontal' },
+          { value: '0',  label: 'Vertical' },
+          { value: '-1', label: 'Both' },
+        ],
+        default: '1',
+      },
+    ],
+  },
+
+  // ─── Advanced (Exercises 5, 6, 10, 12) ───────────────────────────────────
   {
     id: 'fft_2d',
     category: 'advanced',
@@ -352,6 +470,17 @@ export const TOOLS = [
     method: 'bitplane',
     params: [
       { id: 'bit', label: 'Bit Plane (0 = LSB, 7 = MSB)', type: 'slider', min: 0, max: 7, step: 1, default: 7 },
+    ],
+  },
+  {
+    id: 'dct_compress',
+    category: 'advanced',
+    label: 'DCT Compression',
+    desc: 'Block DCT compression similar to JPEG — lower quality shows compression artifacts (Exercise 10)',
+    endpoint: '/api/filter',
+    method: 'dct_compress',
+    params: [
+      { id: 'quality', label: 'Quality', type: 'slider', min: 1, max: 99, step: 1, default: 50 },
     ],
   },
 ]

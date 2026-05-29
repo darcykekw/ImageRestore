@@ -267,3 +267,69 @@ def extract_bit_plane(img, bit=7):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     plane = ((gray >> int(bit)) & 1) * 255
     return cv2.cvtColor(plane.astype(np.uint8), cv2.COLOR_GRAY2BGR)
+
+
+# ex. 2 - pixel relationships (morphological operations show 8-connectivity)
+
+def erode(img, kernel_size=3):
+    k = kernel_size if kernel_size % 2 == 1 else kernel_size + 1
+    kernel = np.ones((k, k), np.uint8)
+    return cv2.erode(img, kernel)
+
+def dilate(img, kernel_size=3):
+    k = kernel_size if kernel_size % 2 == 1 else kernel_size + 1
+    kernel = np.ones((k, k), np.uint8)
+    return cv2.dilate(img, kernel)
+
+def morph_open(img, kernel_size=3):
+    k = kernel_size if kernel_size % 2 == 1 else kernel_size + 1
+    kernel = np.ones((k, k), np.uint8)
+    return cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel)
+
+def morph_close(img, kernel_size=3):
+    k = kernel_size if kernel_size % 2 == 1 else kernel_size + 1
+    kernel = np.ones((k, k), np.uint8)
+    return cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel)
+
+
+# ex. 3 - image transformations
+
+def rotate_image(img, angle=45):
+    h, w = img.shape[:2]
+    M = cv2.getRotationMatrix2D((w // 2, h // 2), angle, 1.0)
+    return cv2.warpAffine(img, M, (w, h))
+
+def scale_image(img, factor=0.5):
+    h, w = img.shape[:2]
+    new_w = max(1, int(w * factor))
+    new_h = max(1, int(h * factor))
+    resized = cv2.resize(img, (new_w, new_h))
+    result = np.zeros_like(img)
+    ph, pw = min(new_h, h), min(new_w, w)
+    result[:ph, :pw] = resized[:ph, :pw]
+    return result
+
+def translate_image(img, tx=50, ty=50):
+    M = np.float32([[1, 0, tx], [0, 1, ty]])
+    return cv2.warpAffine(img, M, (img.shape[1], img.shape[0]))
+
+def flip_image(img, direction=1):
+    return cv2.flip(img, int(direction))
+
+
+# ex. 10 - DCT compression
+
+def dct_compress(img, quality=50):
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY).astype(np.float32)
+    h, w = gray.shape
+    block = 8
+    result = np.zeros_like(gray)
+    threshold = (100 - quality) * 2.55
+    for i in range(0, h - block + 1, block):
+        for j in range(0, w - block + 1, block):
+            b = gray[i:i+block, j:j+block]
+            d = cv2.dct(b)
+            d[np.abs(d) < threshold] = 0
+            result[i:i+block, j:j+block] = cv2.idct(d)
+    result = np.clip(result, 0, 255).astype(np.uint8)
+    return cv2.cvtColor(result, cv2.COLOR_GRAY2BGR)

@@ -16,6 +16,8 @@ export default function App() {
   const [isLoading,      setIsLoading]      = useState(false)
   const [error,          setError]          = useState(null)
   const [justApplied,    setJustApplied]    = useState(false)
+  const [history,        setHistory]        = useState([])
+  const [sidebarOpen,    setSidebarOpen]    = useState(true)
   const appliedTimer = useRef(null)
 
   const activeTool = TOOLS.find(t => t.id === activeToolId) || null
@@ -35,6 +37,7 @@ export default function App() {
       setResult(null)
       setError(null)
       setJustApplied(false)
+      setHistory([])
     }
     reader.readAsDataURL(file)
   }, [])
@@ -77,6 +80,8 @@ export default function App() {
       if (data.error) {
         setError(data.error)
       } else {
+        // save current state to undo stack before overwriting
+        setHistory(prev => [...prev, { processedImage, result }])
         setProcessedImage(data.processed || null)
         setResult(data)
         markApplied()
@@ -87,6 +92,14 @@ export default function App() {
       setIsLoading(false)
     }
   }, [originalImage, activeTool, params])
+
+  const handleUndo = useCallback(() => {
+    if (history.length === 0) return
+    const prev = history[history.length - 1]
+    setHistory(h => h.slice(0, -1))
+    setProcessedImage(prev.processedImage)
+    setResult(prev.result)
+  }, [history])
 
   // just get the stats without applying any filter
   const handleAnalyze = useCallback(async () => {
@@ -111,19 +124,26 @@ export default function App() {
     <div className="flex flex-col h-screen overflow-hidden bg-white text-gray-900"
          style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <ProgressBar isLoading={isLoading} />
-      <Navbar />
+      <Navbar
+        onToggleSidebar={() => setSidebarOpen(o => !o)}
+        sidebarOpen={sidebarOpen}
+        canUndo={history.length > 0}
+        onUndo={handleUndo}
+      />
 
       <div className="flex flex-1 overflow-hidden min-h-0">
-        <Sidebar
-          activeToolId={activeToolId}
-          onSelectTool={handleSelectTool}
-          params={params}
-          onParamChange={(id, val) => setParams(prev => ({ ...prev, [id]: val }))}
-          onApply={handleApply}
-          isLoading={isLoading}
-          hasImage={!!originalImage}
-          justApplied={justApplied}
-        />
+        {sidebarOpen && (
+          <Sidebar
+            activeToolId={activeToolId}
+            onSelectTool={handleSelectTool}
+            params={params}
+            onParamChange={(id, val) => setParams(prev => ({ ...prev, [id]: val }))}
+            onApply={handleApply}
+            isLoading={isLoading}
+            hasImage={!!originalImage}
+            justApplied={justApplied}
+          />
+        )}
 
         <div className="flex flex-col flex-1 overflow-hidden min-h-0">
           <ImageCanvas
