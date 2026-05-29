@@ -1,233 +1,210 @@
-# Digital Image Processing — Final Project Report 2024
+DIGITAL IMAGE PROCESSING - FINAL PROJECT REPORT 2024
 
-| | |
-|---|---|
-| **Name** | Darcy |
-| **Email** | 202380018@psu.palawan.edu.ph |
-| **Course/Block** | __________________ |
-| **Semester/SY** | 2nd Semester 2024 |
-| **Project Title** | ImageRestore |
-| **Live App** | https://imagerestoreproject.vercel.app/ |
+Name: Darcy                                    Course/Block: _______________
+Email Add: 202380018@psu.palawan.edu.ph        Semester/Sy: 2nd Semester 2024
 
----
+Project Title: Art of Image Processing
 
-## Part I
 
-### A. Software/Application
+Part I:
 
-**ImageRestore** — a browser-based Digital Image Processing tool for image enhancement, analysis, and restoration.
+A. Software/Application:
 
----
+ImageRestore - a browser-based image processing tool accessible at:
+https://imagerestoreproject.vercel.app/
 
-### B. Project Description
 
-ImageRestore is a web application that lets users upload any image and apply a range of image processing techniques in real time. It features a before/after split-view comparison, live parameter controls, and a statistics/histogram panel at the bottom. No installation needed — it runs entirely in the browser.
+B. Project Description:
 
-Built with:
-- **Frontend:** React (Vite + Tailwind CSS) deployed on Vercel
-- **Backend:** Python Flask + OpenCV deployed on Render
+ImageRestore is a digital image processing tool that allows users to upload any image
+and apply a range of enhancement, analysis, and restoration techniques. The project
+integrates Exercises 1, 4, 5, 6, 7, 8, 9, 11, 12, and 13, covering image negative,
+contrast enhancement, bit plane slicing, FFT visualization, statistical analysis,
+smoothing filters, sharpening, edge detection, image restoration, and intensity slicing.
+The goal is to demonstrate how these techniques affect image quality and structure, and
+to provide a visual comparison between the original and processed output for each method.
 
----
 
-### C. Procedure / Algorithm
+C. Procedure/Algorithm:
 
-#### 1. Image Upload
-- User uploads an image via drag-and-drop or file picker
-- Image is read as a Base64 data URL and sent to the Flask backend on each Apply
+1. Image Acquisition
+   - An image is loaded into the application for processing
+   - The image is decoded and prepared as a pixel array for algorithm input
 
-#### 2. Preprocessing (all exercises)
-- Backend decodes the Base64 string to a NumPy array via `cv2.imdecode`
-- Output is re-encoded as a Base64 PNG and returned to the frontend
+2. Preprocessing
+   - The appropriate processing technique is selected based on the desired exercise
+   - Configurable parameters such as kernel size, threshold, or strength are set
+   - For color images, channel separation is applied where needed (e.g., YCrCb for
+     histogram equalization, per-channel processing for contrast stretching)
 
-#### 3. Contrast Enhancement *(Exercise 4)*
-- **Histogram Equalization:** Image is converted to YCrCb color space. Only the Y (luminance) channel is equalized using `cv2.equalizeHist`, then converted back to BGR. This preserves color while improving contrast.
-- **Contrast Stretching:** Per-channel linear stretching. Low and high percentile values are computed (`np.percentile`), then pixel values are scaled to fill the full 0–255 range.
+3. Image Processing
 
-#### 4. Image Negative *(Exercise 1)*
-- Straightforward pixel inversion: `result = 255 - img`
-- Works on both grayscale and color images
+   Exercise 1 - Image Negative:
+   - Pixel inversion applied to all channels: result = 255 - img
 
-#### 5. Smoothing Filters *(Exercise 8)*
-- **Mean Filter:** `cv2.blur(img, (k, k))` — averages each pixel with its neighbors
-- **Median Filter:** `cv2.medianBlur(img, k)` — replaces each pixel with the median of neighbors; effective against salt-and-pepper noise
-- **Gaussian Filter:** `cv2.GaussianBlur(img, (k, k), sigma)` — weighted average giving more influence to nearby pixels
+   Exercise 4 - Contrast Enhancement:
+   - Histogram Equalization: convert to YCrCb, equalize Y channel, convert back to BGR
+   - Contrast Stretching: compute low/high percentiles per channel, scale linearly to 0-255
 
-#### 6. Sharpening & Edge Detection *(Exercise 9)*
-- **Laplacian Sharpen:** Computes the Laplacian (`cv2.Laplacian`) and subtracts it from the original to enhance edges
-- **Unsharp Mask:** Blurs the image first, then blends: `result = original × (1 + strength) - blurred × strength`
-- **Sobel:** Computes X and Y gradients separately, combines as magnitude: `√(Sx² + Sy²)`
-- **Prewitt:** Same principle as Sobel but uses a different kernel (equal weights per direction)
+   Exercise 5 - Bit Plane Slicing:
+   - Convert to grayscale, extract bit n: plane = ((gray >> n) & 1) * 255
+   - Bit 7 (MSB) contains the most structure; Bit 0 (LSB) is mostly noise
 
-#### 7. Canny Edge Detection *(Exercise 13)*
-- Converts to grayscale, then applies `cv2.Canny(gray, threshold1, threshold2)`
-- Uses double thresholding and edge tracking by hysteresis
+   Exercise 6 - FFT Visualization:
+   - 2D FFT: grayscale -> fft2 -> fftshift -> log magnitude -> VIRIDIS colormap
+   - 1D FFT: extract middle row -> fft -> fftshift -> normalize -> returned as chart data
 
-#### 8. FFT Visualization *(Exercise 6)*
-- **2D FFT:** Converts to grayscale → `np.fft.fft2` → `np.fft.fftshift` → log magnitude → normalized → COLORMAP_VIRIDIS colormap applied for visualization
-- **1D FFT:** Takes the middle row of the grayscale image → `np.fft.fft` → `fftshift` → normalized magnitude → returned as a data array and plotted as a line chart on the frontend using Recharts
+   Exercise 7 - Image Statistics:
+   - Mean and Std Dev computed using numpy on the grayscale pixel array
+   - Correlation Coefficient computed using numpy corrcoef on two halves of pixel array
+   - Per-channel (R, G, B) mean and std also computed separately
 
-#### 9. Image Statistics *(Exercise 7)*
-- **Mean & Std Dev:** `np.mean`, `np.std` on the grayscale-flattened image
-- **Correlation Coefficient:** `np.corrcoef` computed on the first and second halves of the pixel array
-- **Per-channel stats:** Mean and std calculated individually for Blue, Green, and Red channels
-- Results are shown in the Analysis tab of the bottom panel
+   Exercise 8 - Smoothing Filters:
+   - Mean Filter: cv2.blur with user-defined kernel size
+   - Median Filter: cv2.medianBlur - effective against salt-and-pepper noise
+   - Gaussian Filter: cv2.GaussianBlur with adjustable kernel size and sigma
 
-#### 10. Image Restoration *(Exercise 11)*
-- **Add Gaussian Noise:** `np.random.normal(mean, std, img.shape)` added to pixel values
-- **Remove Gaussian Noise:** `cv2.GaussianBlur` with a tunable kernel size
-- **Add Salt & Pepper Noise:** Random pixels set to 0 or 255 based on a density value
-- **Remove Salt & Pepper:** `cv2.medianBlur` — median filter is ideal for this noise type
-- **Wiener Deblur:** Motion blur kernel constructed, then Wiener filter applied in the frequency domain using `np.fft.fft2` and conjugate: `H* / (|H|² + noise_var)`
-- **Binarization:** Supports Otsu (`cv2.THRESH_OTSU`), Adaptive (`cv2.adaptiveThreshold`), and manual thresholding
-- **Thinning:** Iterative morphological skeletonization using erosion + dilation until no pixels remain
+   Exercise 9 - Sharpening and Edge Detection:
+   - Laplacian Sharpening: compute Laplacian, subtract from original scaled by strength
+   - Unsharp Mask: result = original * (1 + strength) - blurred * strength
+   - Sobel: compute X and Y gradients, combine as magnitude = sqrt(Sx^2 + Sy^2)
+   - Prewitt: same as Sobel but using Prewitt directional kernels
 
-#### 11. Intensity Slicing *(Exercise 12)*
-- Converts to grayscale, creates a boolean mask for pixels within [low, high]
-- Matching pixels are replaced with a user-selected highlight color (default: green)
+   Exercise 11 - Image Restoration:
+   - Add/Remove Gaussian Noise: numpy random normal noise added or removed via Gaussian blur
+   - Add/Remove Salt & Pepper Noise: random pixels set to 0 or 255; removed via median filter
+   - Wiener Deblur: motion blur kernel applied in frequency domain using FFT conjugate filter
+   - Binarization: supports Otsu, Adaptive, and manual threshold methods
+   - Thinning: iterative morphological skeletonization using erosion and dilation loop
 
-#### 12. Bit Plane Slicing *(Exercise 5)*
-- Converts to grayscale, extracts bit plane n: `plane = ((gray >> n) & 1) * 255`
-- Bit 7 (MSB) contains most of the visual structure; Bit 0 (LSB) is mostly noise
+   Exercise 12 - Intensity Slicing:
+   - Convert to grayscale, mask pixels in range [low, high]
+   - Matching pixels replaced with user-selected highlight color
 
-#### 13. Artistic Effects *(Additional)*
-- **Pencil Sketch:** Grayscale → invert → blur → divide original by blurred
-- **Painting Effect:** Three passes of `cv2.bilateralFilter` + adaptive threshold for edge overlay
-- **Vintage/Sepia:** Sepia matrix transform + Gaussian vignette applied to corners
+   Exercise 13 - Canny Edge Detection:
+   - Grayscale conversion followed by cv2.Canny with adjustable threshold1 and threshold2
+   - Uses double thresholding and hysteresis edge tracking
 
----
+4. Output and Analysis
+   - The processed image is displayed alongside the original for direct visual comparison
+   - Statistical measures (mean, standard deviation, correlation coefficient) are computed
+     for both the original and processed images to quantify the effect of each technique
+   - Histogram comparison shows how pixel intensity distribution changes after processing
 
-### D. Code Implementation
 
-The full source code is available at: https://github.com/darcykekw/ImageRestore
+D. Code Implementation:
 
-**Stack summary:**
+The image processing functions are implemented in Python using OpenCV, NumPy, SciPy,
+and Matplotlib. OpenCV is used for spatial filtering, edge detection, morphological
+operations, histogram computation, and color space conversions. NumPy handles matrix
+operations, FFT computation, and noise generation. Matplotlib is used to generate
+histogram plots. The user interface is built as a web application to make the tool
+accessible without any local installation.
 
-| Layer | Technology |
-|---|---|
-| Image processing | Python, OpenCV, NumPy, SciPy, Matplotlib |
-| API server | Flask + flask-cors, deployed on Render |
-| Frontend | React 18, Vite, Tailwind CSS |
-| Charts | Recharts (histogram + FFT chart) |
-| Deployment | Vercel (frontend) + Render (backend) |
+Source code: https://github.com/darcykekw/ImageRestore
 
-**Key files:**
-- `backend/filters.py` — all image processing functions
-- `backend/analysis.py` — stats and histogram generation
-- `backend/app.py` — Flask API endpoints
-- `frontend/src/toolsConfig.js` — tool definitions and parameters
-- `frontend/src/App.jsx` — main state and API logic
-- `frontend/src/components/` — UI components
 
----
+E. Output Images:
 
-### E. Output Images
+[IMAGE 1 - App Overview]
+Screenshot of the full application with an image loaded.
 
-> **Note:** Take screenshots from https://imagerestoreproject.vercel.app/ using a test image.
+[IMAGE 2 - Exercise 1: Image Negative]
+Result of applying Image Negative on a color photo.
 
----
+[IMAGE 3 - Exercise 4: Histogram Equalization]
+Before/after comparison on a low-contrast image. Include the Histogram tab showing
+the distribution shift.
 
-**[IMAGE 1] — App Overview**
-> Screenshot of the full app with an image loaded, showing the sidebar, before/after canvas, and bottom panel.
+[IMAGE 4 - Exercise 4: Contrast Stretching]
+Before/after result with low percentile = 2, high = 98.
 
----
+[IMAGE 5 - Exercise 5: Bit Plane Slicing]
+Two screenshots: Bit 7 (MSB, most detail) and Bit 0 (LSB, mostly noise).
 
-**[IMAGE 2] — Exercise 4: Histogram Equalization**
-> Apply "Histogram Equalization" on a low-contrast image. Show the before/after split and the histogram comparison in the Histogram tab.
+[IMAGE 6 - Exercise 6: FFT 2D]
+Frequency spectrum output with VIRIDIS colormap.
 
----
+[IMAGE 7 - Exercise 6: FFT 1D]
+FFT tab in the bottom panel showing the frequency line chart.
 
-**[IMAGE 3] — Exercise 4: Contrast Stretching**
-> Apply "Contrast Stretching" with low=2, high=98. Show the before/after result.
+[IMAGE 8 - Exercise 7: Image Statistics]
+Analysis tab showing Mean, Std Dev, Correlation, and per-channel stats.
 
----
+[IMAGE 9 - Exercise 8: Smoothing Filters]
+Results of Mean, Median, and Gaussian filters (three screenshots or collage).
 
-**[IMAGE 4] — Exercise 1: Image Negative**
-> Apply "Image Negative." Show the inverted color result.
+[IMAGE 10 - Exercise 9: Sharpening]
+Results of Laplacian Sharpen and Unsharp Mask.
 
----
+[IMAGE 11 - Exercise 9 & 13: Edge Detection]
+Results of Sobel, Prewitt, and Canny edge detection.
 
-**[IMAGE 5] — Exercise 8: Smoothing Filters**
-> Apply "Mean Filter," "Median Filter," and "Gaussian Filter" (can be three separate screenshots or a collage). Show the softening/blur effect.
+[IMAGE 12 - Exercise 11: Noise and Restoration]
+Add Gaussian Noise result, then Remove Gaussian Noise result.
 
----
+[IMAGE 13 - Exercise 11: Binarization and Thinning]
+Binarize (Otsu) result and Image Thinning result.
 
-**[IMAGE 6] — Exercise 9: Sharpening**
-> Apply "Laplacian Sharpen" and "Unsharp Mask." Show the enhanced edge sharpness.
+[IMAGE 14 - Exercise 12: Intensity Slicing]
+Highlighted intensity range on a grayscale image.
 
----
 
-**[IMAGE 7] — Exercise 9 & 13: Edge Detection**
-> Apply "Sobel," "Prewitt," and "Canny" edge detection. Three screenshots showing edge maps.
+Part II:
 
----
+1. Significance:
 
-**[IMAGE 8] — Exercise 6: FFT 2D**
-> Apply "FFT 2D." Show the frequency spectrum output (the colormap visualization).
+Digital image processing techniques are essential in many fields such as medical
+imaging, surveillance, remote sensing, and multimedia. This project is significant
+because it integrates multiple DIP exercises into a single working tool, demonstrating
+how fundamental techniques like contrast enhancement, noise reduction, edge detection,
+and frequency analysis can be applied to real images. Understanding these techniques is
+important because they form the foundation of most modern image-based systems used in
+practice today.
 
----
+2. Technology Relation:
 
-**[IMAGE 9] — Exercise 6: FFT 1D**
-> Select "FFT 1D" and click the FFT tab in the bottom panel. Show the frequency spectrum line chart.
+The exercises implemented in this project are directly related to existing imaging
+technologies. Histogram equalization and contrast stretching (Exercise 4) are standard
+preprocessing steps in medical imaging systems such as X-ray and MRI viewers. Mean,
+median, and Gaussian filters (Exercise 8) are used in camera noise reduction pipelines.
+Edge detection using Sobel, Prewitt, and Canny operators (Exercises 9 and 13) is a core
+component of computer vision systems for object and boundary detection. FFT visualization
+(Exercise 6) is the basis of frequency-domain filtering used in image compression. Image
+restoration techniques (Exercise 11) such as Wiener deblurring and binarization are used
+in document scanning, forensic imaging, and fingerprint recognition systems.
 
----
+3. Learning Enhancement:
 
-**[IMAGE 10] — Exercise 7: Image Statistics**
-> Click "Analyze" with an image loaded. Show the Analysis tab with Mean, Std Dev, Correlation, and per-channel stats.
+This project enhanced understanding of DIP concepts by requiring each algorithm to be
+implemented and tested on actual images rather than just studied theoretically. Applying
+histogram equalization on a real low-contrast image made it clear how pixel distribution
+shifts. Comparing smoothing filters side by side showed the practical difference between
+mean, median, and Gaussian blurring. Implementing the Wiener filter in the frequency
+domain deepened understanding of how convolution and deconvolution work mathematically.
+Overall, the project turned abstract equations from the exercises into observable and
+measurable results on real image data.
 
----
+4. Innovation and Application:
 
-**[IMAGE 11] — Exercise 11: Noise & Restoration**
-> Apply "Add Gaussian Noise," then "Remove Gaussian Noise." Two screenshots showing before/after noise removal.
+This project applies the DIP exercises in a visually intuitive way by allowing users to
+interact with the algorithms through parameter sliders and see the effect immediately on
+their own uploaded images. Rather than running isolated scripts per exercise, all
+techniques are unified under one interface where results from different exercises can be
+compared. The before-and-after split view makes it easy to evaluate the impact of each
+algorithm, which is a practical improvement over static output images. This approach
+demonstrates how fundamental image processing concepts can be packaged into a useful and
+accessible application.
 
----
+5. Problem-Solving:
 
-**[IMAGE 12] — Exercise 11: Binarization & Thinning**
-> Apply "Binarize (Otsu)" then "Image Thinning." Show the binary and skeletonized result.
-
----
-
-**[IMAGE 13] — Exercise 12: Intensity Slicing**
-> Apply "Intensity Slicing" with a mid-range selection. Show the highlighted intensity band.
-
----
-
-**[IMAGE 14] — Exercise 5: Bit Plane Slicing**
-> Apply "Bit Plane Slicing" on Bit 7 and Bit 0. Two screenshots showing the difference between MSB and LSB planes.
-
----
-
-## Part II
-
-### 1. Significance
-
-Most DIP tools are either too complex (MATLAB, heavy desktop apps) or too basic (single-purpose scripts). ImageRestore puts everything in one place — accessible from any browser, no setup needed. It's genuinely useful for studying DIP concepts visually, since you can see the exact effect of each algorithm in real time.
-
-### 2. Technology Relation
-
-Every algorithm in this project has a real-world counterpart:
-
-| Feature | Real-world use |
-|---|---|
-| Histogram Equalization | Medical imaging (X-ray/MRI contrast) |
-| Noise removal | Camera firmware, satellite imagery |
-| Wiener Deblur | Forensic image recovery |
-| Canny Edge Detection | Autonomous vehicles, object detection |
-| FFT | Signal analysis, image compression (JPEG uses DCT, a cousin of FFT) |
-| Binarization + Thinning | OCR, fingerprint recognition |
-
-### 3. Learning Enhancement
-
-Building this pushed me to go beyond just understanding the theory — I had to actually implement each algorithm from scratch and debug it on real images. The full-stack aspect (Python backend + React frontend) also taught me how to design a clean API and manage state across components. The before/after comparison especially helped me understand what each filter actually does to an image.
-
-### 4. Innovation and Application
-
-What makes this different from a typical command-line DIP project is the drag-and-compare interface — you can slide between before and after in real time. The parameter sliders let you fine-tune values and immediately see the impact, which turns abstract equations into something you can actually feel. It's also the only tool in this project batch that's live on the web and usable by anyone with a browser.
-
-### 5. Problem-Solving
-
-The main challenges:
-
-- **OpenCV on a server:** `opencv-python` was too large for Vercel's serverless limit. Switched to `opencv-python-headless` and moved the backend to Render, which has no size restrictions.
-- **Base64 image transfer:** Sending full images as Base64 strings over HTTP was slow for large images. Addressed by encoding to PNG (lossless but smaller than BMP) before sending.
-- **Thinning loop:** The morphological thinning loop had no exit guard, causing infinite loops on solid-color images. Fixed by checking `cv2.countNonZero(temp) == 0` to break early.
-- **Slider feel:** Float params like sigma needed proper rounding to avoid React re-render jitter. Fixed by separating float vs. integer params and rounding only integers.
+Working through the exercises presented several algorithmic challenges. For contrast
+stretching, choosing the right percentile range required testing on images with different
+distributions to avoid over-stretching. For the Canny edge detector, tuning the two
+thresholds was non-trivial since too low a threshold introduced noise and too high a
+threshold missed real edges. Implementing the Wiener filter required understanding how
+to construct the motion blur kernel and apply it correctly in the frequency domain using
+the conjugate of the filter transfer function. For image thinning, the iterative
+morphological loop needed a proper termination condition to avoid running indefinitely on
+images with no foreground pixels. Each of these problems was resolved through careful
+reading of the algorithm theory and testing on different types of input images.

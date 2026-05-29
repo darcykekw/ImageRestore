@@ -8,7 +8,7 @@ export default function Navbar() {
         className="text-[15px] font-semibold text-gray-900"
         style={{ letterSpacing: '-0.01em' }}
       >
-        ImageRestore
+        Art of Image Processing
       </span>
 
       <span className="text-[11px] text-gray-400">

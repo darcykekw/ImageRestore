@@ -34,14 +34,6 @@ export const CATEGORIES = [
     borderColor: 'border-cyan-500/40',
   },
   {
-    id: 'artistic',
-    label: 'Artistic FX',
-    icon: '✦',
-    exercise: 'Creative',
-    color: 'text-pink-400',
-    borderColor: 'border-pink-500/40',
-  },
-  {
     id: 'restoration',
     label: 'Restoration',
     icon: '⟳',
@@ -56,6 +48,14 @@ export const CATEGORIES = [
     exercise: 'Exer 5, 6, 12',
     color: 'text-rose-400',
     borderColor: 'border-rose-500/40',
+  },
+  {
+    id: 'artistic',
+    label: 'Artistic FX',
+    icon: '✦',
+    exercise: 'Creative',
+    color: 'text-pink-400',
+    borderColor: 'border-pink-500/40',
   },
 ]
 
