@@ -81,13 +81,13 @@ export default function ImageCanvas({ originalImage, processedImage, isLoading, 
 
       {showSingleOrig && (
         <div
-          className="flex-1 flex items-center justify-center relative"
+          className="flex-1 relative overflow-hidden"
           style={{ background: '#f9fafb' }}
         >
           <img
             src={originalImage}
             alt="Original"
-            className="max-w-full max-h-full object-contain"
+            className="absolute inset-0 w-full h-full object-contain"
             draggable={false}
           />
           <span

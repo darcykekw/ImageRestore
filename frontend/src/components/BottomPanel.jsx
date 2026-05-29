@@ -78,9 +78,9 @@ export default function BottomPanel({ result, hasOriginal, onAnalyze, isLoading 
           <div className="flex items-start gap-8 h-full">
             {statsOrig ? (
               <>
-                <StatRow label="Mean"        orig={statsOrig.mean}        proc={statsProc?.mean} />
-                <StatRow label="Std Dev"     orig={statsOrig.std_dev}     proc={statsProc?.std_dev} />
-                <StatRow label="Correlation" orig={statsOrig.correlation} proc={statsProc?.correlation} decimals={4} />
+                <StatRow label="Mean"        desc="avg. brightness (0–255)"  orig={statsOrig.mean}        proc={statsProc?.mean} />
+                <StatRow label="Std Dev"     desc="contrast level"           orig={statsOrig.std_dev}     proc={statsProc?.std_dev} />
+                <StatRow label="Correlation" desc="texture uniformity"       orig={statsOrig.correlation} proc={statsProc?.correlation} decimals={4} />
 
                 {/* per-channel breakdown for RGB images */}
                 {statsOrig.channels && (
@@ -91,11 +91,11 @@ export default function BottomPanel({ result, hasOriginal, onAnalyze, isLoading 
                       return (
                         <div key={ch}>
                           <div className="text-[10px] font-semibold uppercase mb-1" style={{ color: c, letterSpacing: '0.06em' }}>{ch}</div>
-                          <div className="text-[11px] font-mono text-gray-500">
-                            μ {s.mean.toFixed(1)}{p && <span className="text-gray-300 ml-1">→ {p.mean.toFixed(1)}</span>}
+                          <div className="text-[11px] text-gray-500">
+                            avg {s.mean.toFixed(1)}{p && <span className="text-gray-300 ml-1">→ {p.mean.toFixed(1)}</span>}
                           </div>
-                          <div className="text-[11px] font-mono text-gray-500">
-                            σ {s.std.toFixed(1)}{p && <span className="text-gray-300 ml-1">→ {p.std.toFixed(1)}</span>}
+                          <div className="text-[11px] text-gray-500">
+                            std {s.std.toFixed(1)}{p && <span className="text-gray-300 ml-1">→ {p.std.toFixed(1)}</span>}
                           </div>
                         </div>
                       )
@@ -137,27 +137,30 @@ export default function BottomPanel({ result, hasOriginal, onAnalyze, isLoading 
   )
 }
 
-function StatRow({ label, orig, proc, decimals = 2 }) {
+function StatRow({ label, desc, orig, proc, decimals = 2 }) {
   const delta = proc !== undefined && orig !== undefined ? proc - orig : null
   return (
     <div>
-      <div className="text-[10px] font-medium text-gray-400 uppercase mb-1"
+      <div className="text-[10px] font-semibold text-gray-500 uppercase mb-0.5"
            style={{ letterSpacing: '0.06em' }}>
         {label}
       </div>
+      {desc && (
+        <div className="text-[9px] text-gray-300 mb-1">{desc}</div>
+      )}
       <div className="text-[22px] font-mono font-semibold text-gray-900 leading-none"
            style={{ letterSpacing: '-0.04em' }}>
         {orig !== undefined ? orig.toFixed(decimals) : '—'}
       </div>
       {proc !== undefined && (
         <div className="flex items-center gap-1.5 mt-1">
-          <span className="text-[12px] font-mono text-gray-400">{proc.toFixed(decimals)}</span>
+          <span className="text-[11px] text-gray-400">after: {proc.toFixed(decimals)}</span>
           {delta !== null && Math.abs(delta) > 0.0005 && (
             <span
               className="text-[10px] font-mono"
               style={{ color: delta > 0 ? '#16a34a' : '#dc2626' }}
             >
-              {delta > 0 ? '+' : ''}{delta.toFixed(decimals)}
+              ({delta > 0 ? '+' : ''}{delta.toFixed(decimals)})
             </span>
           )}
         </div>
