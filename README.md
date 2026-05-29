@@ -1,6 +1,6 @@
 # ImageRestore — Digital Image Processing Studio
 
-**Live:** https://imagerestoreproject.vercel.app/
+**Live:** https://artofimageprocessing.vercel.app/
 
 A web-based Digital Image Processing application covering Exercises 1, 4, 5, 6, 7, 8, 9, 11, 12, and 13.
 
